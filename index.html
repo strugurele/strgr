@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kahoot Biblic: Avraam Avansat</title>
+<style>
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    color: #fff;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    max-width: 900px;
+    margin: 50px auto;
+    background: rgba(0,0,0,0.85);
+    padding: 30px;
+    border-radius: 15px;
+}
+h1 {
+    margin-bottom: 20px;
+}
+.question {
+    font-size: 1.3em;
+    margin-bottom: 20px;
+}
+.answers button {
+    display: block;
+    background: #00bfff;
+    border: none;
+    padding: 15px;
+    margin: 10px 0;
+    width: 100%;
+    font-size: 1em;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.answers button.correct {
+    background: #32cd32 !important;
+}
+.answers button.wrong {
+    background: #ff4500 !important;
+}
+.answers button:hover {
+    background: #1e90ff;
+}
+.timer {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+.score {
+    font-size: 1.2em;
+    margin-top: 20px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Kahoot Biblic: Avraam Nivel Expert</h1>
+    <div class="timer">Timp: <span id="time">20</span>s</div>
+    <div class="question" id="question">Întrebare aici</div>
+    <div class="answers" id="answers"></div>
+    <div class="score" id="score">Scor: 0</div>
+</div>
+
+<script>
+const questions = [
+{ q: "Care era numele original al lui Avraam înainte de a fi schimbat de Dumnezeu și ce înseamnă?", options: ["Abram, 'tată exaltat'", "Abinadab, 'tatăl meu este nobil'", "Abimelec, 'tatăl meu este rege'", "Amasai, 'putere trimisă de Dumnezeu'"], answer: 0 },
+{ q: "În ce oraș s-a născut Avraam și ce caracteristici culturale avea acel loc?", options: ["Ur din Caldeea, un oraș avansat mesopotamian", "Betel, un mic așezământ religios", "Ierusalim, oraș fortificat", "Hebron, tabără nomadă"], answer: 0 },
+{ q: "Ce vârstă avea Avraam când a primit promisiunea lui Dumnezeu de a avea urmași?", options: ["75 ani", "60 ani", "100 ani", "50 ani"], answer: 0 },
+{ q: "Cum se numea fiul lui Avraam cu Agar și în ce circumstanțe s-a născut?", options: ["Ismael, deoarece Sara era stearpă și i-a dat slujnica", "Isaac, rod al unui miracol", "Iacov, moștenitor al promisiunii", "Lot, nepotul lui Avraam"], answer: 0 },
+{ q: "Ce fiu a avut Avraam cu Sara și ce semnifică nașterea lui?", options: ["Isaac, nașterea miraculoasă la bătrânețe, semn al promisiunii divine", "Ismael, primul fiu al Avraamului", "Iacov, patriarh al Israelelui", "Lot, nepotul lui Avraam"], answer: 0 },
+{ q: "Care era legământul pe care Dumnezeu l-a făcut cu Avraam?", options: ["Promisiunea de descendență numeroasă și binecuvântarea tuturor națiunilor", "Promisiunea de bogății și victorie în războaie", "Promisiunea că nu va avea dușmani", "Promisiunea că va fi preot al poporului"], answer: 0 },
+{ q: "La ce vârstă a avut Avraam pe Isaac și ce simbolizează aceasta?", options: ["100 ani, intervenția divină în promisiune", "90 ani, răbdarea umană", "75 ani, începutul legământului", "120 ani, longevitatea"], answer: 0 },
+{ q: "Care a fost încercarea supremă a lui Avraam dată de Dumnezeu?", options: ["Jertfa lui Isaac, test de credință și ascultare", "Călătoria în Egipt, arătând smerenie", "Postul de 40 de zile, purificare", "Lupta împotriva regilor, dreptate"], answer: 0 },
+{ q: "Câți drepți trebuiau să fie în Sodoma pentru a fi salvată?", options: ["10 drepți, exemplu de dreptate și milă divină", "5 drepți, răbdarea lui Dumnezeu", "20 drepți, bunătate abundentă", "1 drept, speranță într-unul singur"], answer: 0 },
+{ q: "Cine era Melhisedec și ce simbolizează întâlnirea cu Avraam?", options: ["Preot al Dumnezeului Preaînalt, simbol al preoției veșnice", "Rege dușman al lui Avraam", "Nepot și aliat al lui Avraam", "Profet care l-a mustrat"], answer: 0 },
+{ q: "Ce simbolizează numele Avraam?", options: ["Tată al multor neamuri, legământ divin", "Om al credinței", "Rob al lui Dumnezeu", "Războinic puternic"], answer: 0 },
+{ q: "Ce semn fizic a confirmat legământul lui Dumnezeu cu Avraam?", options: ["Circumcizia", "Botezul", "Sacrificiul unui miel", "Construcția unui altar"], answer: 0 },
+{ q: "Cum a reacționat Avraam când Dumnezeu i-a spus că va distruge Sodoma?", options: ["S-a rugat și a intercedat pentru locuitori", "A fugit imediat fără a întreba", "A ignorat cuvintele lui Dumnezeu", "A construit un zid pentru cetate"], answer: 0 },
+{ q: "Câți ani avea Avraam când a părăsit Ur?", options: ["75 ani", "70 ani", "60 ani", "50 ani"], answer: 0 },
+{ q: "Ce diferență de vârstă era între Isaac și Ismael?", options: ["Ismael era mai mare cu 14 ani", "Isaac era mai mare cu 5 ani", "Ismael era mai mic cu 10 ani", "Isaac era mai mic cu 20 ani"], answer: 0 },
+{ q: "Cum se numea soția lui Avraam?", options: ["Sara", "Rebeca", "Rahela", "Lea"], answer: 0 },
+{ q: "Ce teritoriu a cumpărat Avraam pentru a îngropa pe Sara?", options: ["Cârpița lui Macpela din Hebron", "Betel", "Ur", "Sodoma"], answer: 0 },
+{ q: "Cum a reacționat Avraam când a întâlnit faraonul Egiptului?", options: ["A spus că Sara este sora lui pentru a se proteja", "A spus adevărul imediat", "A luat armele și a fugit", "A construit un altar de închinare"], answer: 0 },
+{ q: "Cum a ajutat Avraam pe Lot să scape de răpitori?", options: ["A atacat armatele și a eliberat captivi", "A plătit răpitorii", "A ignorat situația", "A făcut pace cu răpitorii"], answer: 0 },
+{ q: "Ce lecție spirituală învață sacrificiul lui Isaac?", options: ["Credință absolută și încredere în Dumnezeu", "Putere și curaj fizic", "Bogăție și avere", "Politică și negociere"], answer: 0 },
+{ q: "Cum s-a manifestat răbdarea lui Avraam în așteptarea promisiunii lui Dumnezeu?", options: ["A așteptat decenii pentru nașterea lui Isaac", "A fugit în alt ținut", "A luat o altă soție pentru descendență", "A părăsit credința"], answer: 0 },
+{ q: "Cum este reflectată credința lui Avraam în Noul Testament?", options: ["Este exemplu de dreptate prin credință (Romani 4:3)", "Nu este menționat", "Ca un om slab", "Ca un profet minor"], answer: 0 },
+{ q: "Ce nume a primit fiul lui Ismael?", options: ["Ismael, patriarh al arabilor", "Isaac", "Iacov", "Lot"], answer: 0 },
+{ q: "Cine a fost patriarhul care l-a binecuvântat pe Avraam după victoriile sale?", options: ["Melhisedec", "Noe", "Moise", "Aaron"], answer: 0 },
+{ q: "Ce promisiune a făcut Dumnezeu despre pământul Canaan?", options: ["Va fi moștenirea urmașilor lui Avraam", "Va fi loc de exil", "Va fi distrus", "Nu există mențiune"], answer: 0 }
+];
+
+let currentQuestion = 0;
+let score = 0;
+let timeLeft = 20;
+let timer;
+
+const questionEl = document.getElementById('question');
+const answersEl = document.getElementById('answers');
+const scoreEl = document.getElementById('score');
+const timeEl = document.getElementById('time');
+
+function loadQuestion() {
+    if(currentQuestion >= questions.length){
+        questionEl.textContent = "Joc terminat!";
+        answersEl.innerHTML = '';
+        return;
+    }
+
+    timeLeft = 20;
+    timeEl.textContent = timeLeft;
+
+    const q = questions[currentQuestion];
+    questionEl.textContent = q.q;
+    answersEl.innerHTML = '';
+    q.options.forEach((option, index) => {
+        const btn = document.createElement('button');
+        btn.textContent = option;
+        btn.onclick = () => selectAnswer(index);
+        answersEl.appendChild(btn);
+    });
+
+    timer = setInterval(() => {
+        timeLeft--;
+        timeEl.textContent = timeLeft;
+        if(timeLeft <= 0){
+            clearInterval(timer);
+            showCorrect();
+            setTimeout(nextQuestion, 2000);
+        }
+    }, 1000);
+}
+
+function selectAnswer(index){
+    clearInterval(timer);
+    const correct = questions[currentQuestion].answer;
+    if(index === correct){
+        score += 10;
+        scoreEl.textContent = `Scor: ${score}`;
+    }
+    showCorrect();
+    setTimeout(nextQuestion, 2000);
+}
+
+function showCorrect(){
+    const correct = questions[currentQuestion].answer;
+    Array.from(answersEl.children).forEach((btn, idx) => {
+        if(idx === correct) btn.classList.add('correct');
+        else btn.classList.add('wrong');
+        btn.disabled = true;
+    });
+}
+
+function nextQuestion(){
+    currentQuestion++;
+    loadQuestion();
+}
+
+loadQuestion();
+</script>
+</body>
+</html>
